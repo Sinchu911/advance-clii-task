@@ -11,8 +11,8 @@ def create_app():
     login_manager.init_app(app)
 
     # Import routes (IMPORTANT: inside function)
-    from routes.auth import auth
-    from routes.tasks import tasks
+    from auth import auth
+    from tasks import tasks
 
     app.register_blueprint(auth)
     app.register_blueprint(tasks)
