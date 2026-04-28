@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row text-center mb-4">
+    <div class="col"><div class="card bg-primary text-white p-3">Total: {{ total }}</div></div>
+    <div class="col"><div class="card bg-success text-white p-3">Completed: {{ completed }}</div></div>
+    <div class="col"><div class="card bg-warning text-dark p-3">Pending: {{ pending }}</div></div>
+</div>
+
+<form method="GET" class="row mb-3">
+    <div class="col"><input name="search" class="form-control" placeholder="Search"></div>
+    <div class="col">
+        <select name="priority" class="form-control">
+            <option>All</option><option>Low</option><option>Medium</option><option>High</option>
+        </select>
+    </div>
+    <div class="col">
+        <select name="status" class="form-control">
+            <option value="">All</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+        </select>
+    </div>
+    <div class="col"><button class="btn btn-info w-100">Apply</button></div>
+</form>
+
+<form method="POST" action="/add" class="mb-4">
+    <div class="row">
+        <div class="col"><input name="title" class="form-control" placeholder="Title" required></div>
+        <div class="col"><input name="description" class="form-control" placeholder="Description"></div>
+        <div class="col"><input name="due_date" type="date" class="form-control"></div>
+        <div class="col">
+            <select name="priority" class="form-control">
+                <option>Low</option><option>Medium</option><option>High</option>
+            </select>
+        </div>
+        <div class="col"><button class="btn btn-success w-100">Add</button></div>
+    </div>
+</form>
+
+{% for task in tasks %}
+<div class="card mb-3 p-3 
+{% if task.completed %}bg-secondary
+{% elif task.due_date and task.due_date < current_date %}bg-danger text-white
+{% elif task.due_date == current_date %}bg-warning
+{% endif %}">
+    
+    <div class="d-flex justify-content-between">
+        <div>
+            <h5>
+                {{ task.title }}
+                <span class="badge bg-{% if task.priority=='High' %}danger{% elif task.priority=='Medium' %}warning{% else %}info{% endif %}">
+                    {{ task.priority }}
+                </span>
+            </h5>
+            <p>{{ task.description }}</p>
+            <small>Due: {{ task.due_date }}</small>
+        </div>
+
+        <div>
+            <a href="/complete/{{ task.id }}" class="btn btn-sm btn-outline-light">✔</a>
+            <a href="/edit/{{ task.id }}" class="btn btn-sm btn-outline-info">✏️</a>
+            <a href="/delete/{{ task.id }}" class="btn btn-sm btn-outline-danger">🗑</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<a href="/logout" class="btn btn-danger mt-3">Logout</a>
+
+{% endblock %}
